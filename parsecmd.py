@@ -28,6 +28,7 @@ def parse_args(print_args=False):
                         help="Max # of emails sent", default="10")
     parser.add_argument("-u", "--email_subject", metavar="email-subject", dest="email_subject",
                         help="Email's subject", default="Item(s) matched your search")
+    # TODO move below to config
     #parser.add_argument("-e", metavar="email-to", dest="email_to",
     #                    help="Email to send it to", default="")
     #parser.add_argument("-f", metavar="email-from", dest="email_from",
