@@ -1,0 +1,6 @@
+# files
+*.pyc
+*.swp
+
+# dirs
+.lbc/
