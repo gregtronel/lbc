@@ -47,6 +47,10 @@ class LBCParser():
     def get_url_from_args(self, baseUrl, args):
         """
         """
+        def get_index(descr):
+            return sorted([(i, abs(int(x.replace('+',''))-int(descr)))\
+                for x,i in mapping.surface_map.items()], key=lambda x: x[1])[0][0]
+
         url = baseUrl
         if args.region:
             url += "{}/".format(args.region)
@@ -68,32 +72,25 @@ class LBCParser():
             ps_idx, pe_idx = (u'', u'')
             if ps:
                 # get closest mapped index for corresponding value
-                ps_idx = sorted([(i, abs(int(x.replace('+',''))-int(ps)))\
-                    for x,i in mapping.price_map.items()], key=lambda x: x[1])[0][0]
+                ps_idx = get_index(ps)
             if pe:
-                pe_idx = sorted([(i, abs(int(x.replace('+',''))-int(pe)))\
-                    for x,i in mapping.price_map.items()], key=lambda x: x[1])[0][0]
+                pe_idx = get_index(pe)
             url += "&ps={}&pe={}".format(ps_idx, pe_idx)
         if args.minarea or args.maxarea:
             sqs, sqe = (args.minarea, args.maxarea)
             sqs_idx, sqe_idx = (u'', u'')
             if sqs:
-                sqs_idx = sorted([(i, abs(int(x.replace('+',''))-int(sqs)))\
-                    for x,i in mapping.surface_map.items()], key=lambda x: x[1])[0][0]
+                sqs_idx = get_index(sqs)
             if sqe:
-                sqe_idx = sorted([(i, abs(int(x.replace('+',''))-int(sqe)))\
-                    for x,i in mapping.surface_map.items()], key=lambda x: x[1])[0][0]
+                sqe_idx = get_index(sqe)
             url += "&sqs={}&sqe={}".format(sqs_idx, sqe_idx)
         if args.minroom or args.maxroom:
             ros, roe = (args.minroom, args.maxroom)
             ros_idx, roe_idx = (u'', u'')
             if ros:
-                ros_idx = sorted([(i, abs(int(x.replace('+',''))-int(ros)))\
-                    for x,i in mapping.piece_map.items()], key=lambda x: x[1])[0][0]
-            if pe:
-                roe_idx = sorted([(i, abs(int(x.replace('+',''))-int(roe)))\
-                    for x,i in mapping.piece_map.items()], key=lambda x: x[1])[0][0]
-            url += "&ros={}&roe={}".format(ros_idx, roe_idx)
+                ros_idx = get_index(ros)
+            if roe:
+                roe_idx = get_index(roe)
         return url
 
     
@@ -139,7 +136,7 @@ class LBCParser():
         """
         if self.num_mail > 0:
             log.info("Sending to the following address(es):\n {}".format(self.destinations))
-            mailing.send_message(self.text, self.destinations)
+            mailing.send_message(self.text, self.destinations, args)
             self.db.commit()
         else:
             log.info("Nothing new to send :(")
@@ -187,9 +184,9 @@ def check_config_is_default(cfg, log):
 if __name__ == "__main__":
     
     # init - parse args, get config, get logger 
-    args    = parsecmd.parse_args(print_args=False)
+    args    = parsecmd.parse_args()
     cfg     = config.get_config()
-    log  = logger.get_logger()
+    log     = logger.get_logger()
     
     # check config file is still default
     check_config_is_default(cfg, log)
