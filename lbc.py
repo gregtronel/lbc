@@ -52,8 +52,12 @@ class LBCParser():
                 for x,i in mapping.surface_map.items()], key=lambda x: x[1])[0][0]
 
         url = baseUrl
+
+        # region
         if args.region:
             url += "{}/".format(args.region)
+        
+        # location
         if args.location:
             locstr = '%20'
             if len(args.location) > 3:
@@ -62,11 +66,15 @@ class LBCParser():
                 locstr += '{}%2C%20'.format(loc)
             locstr = re.sub('%2C%20$', '', locstr)
             url +=  "?th=1&location={}".format(locstr)
+
+        # keywords
         if args.searches:
             cat_searches = "q="
             for srch in args.searches:
                 cat_searches += "{}%20".format(srch)
             url+='&'+cat_searches
+
+        # minmax price
         if args.minprice or args.maxprice:
             ps, pe = (args.minprice, args.maxprice)
             ps_idx, pe_idx = (u'', u'')
@@ -76,6 +84,8 @@ class LBCParser():
             if pe:
                 pe_idx = get_index(pe)
             url += "&ps={}&pe={}".format(ps_idx, pe_idx)
+
+        # minmax area
         if args.minarea or args.maxarea:
             sqs, sqe = (args.minarea, args.maxarea)
             sqs_idx, sqe_idx = (u'', u'')
@@ -84,6 +94,8 @@ class LBCParser():
             if sqe:
                 sqe_idx = get_index(sqe)
             url += "&sqs={}&sqe={}".format(sqs_idx, sqe_idx)
+
+        # minmax rooms
         if args.minroom or args.maxroom:
             ros, roe = (args.minroom, args.maxroom)
             ros_idx, roe_idx = (u'', u'')
