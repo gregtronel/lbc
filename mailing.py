@@ -8,7 +8,7 @@ import config
 cfg = config.get_config()
 
 
-def send_message(msg, dests, subject="Sent from local"):
+def send_message(msg, dests, args, subject="Sent from local"):
 
     content= """\
     {}
@@ -20,7 +20,10 @@ def send_message(msg, dests, subject="Sent from local"):
 	server.login(cfg['source_usr'], cfg['source_pwd'])
         
         msg = MIMEMultipart()
-        msg['Subject'] = subject
+        if args.email_subject:
+            msg['Subject'] = args.email_subject
+        else:
+            msg['Subject'] = subject
         msg['From'] = cfg['source_usr']
 	msg.attach(MIMEText(content, 'html'))
         for dest in dests:

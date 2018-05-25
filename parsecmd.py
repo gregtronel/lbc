@@ -1,7 +1,7 @@
 import argparse
 from pprint import pprint
 
-def parse_args(print_args=False):
+def parse_args():
     """
     """
     parser = argparse.ArgumentParser(description="LeBonCoin.fr Filter/Alert Bot")
@@ -26,20 +26,23 @@ def parse_args(print_args=False):
                         help="maximum area in m2", default="")
     parser.add_argument("-m", "--maxmail", metavar="maxmail", dest="maxmail",
                         help="Max # of emails sent", default="10")
-    parser.add_argument("-u", "--email_subject", metavar="email-subject", dest="email_subject",
+    parser.add_argument("-pa", "--print_args", action="store_true",
+                        help="Print command line arguments")
+    parser.add_argument("-es" "--email_subject", metavar="email-subject", dest="email_subject",
                         help="Email's subject", default="Item(s) matched your search")
-    # TODO move below to config
+    # TODO 
     #parser.add_argument("-e", metavar="email-to", dest="email_to",
     #                    help="Email to send it to", default="")
     #parser.add_argument("-f", metavar="email-from", dest="email_from",
     #                    help="Email to send it from", default="")
     #parser.add_argument("--smtp-server", metavar="smtp-server", dest="server",
     #                    help="SMTP server to use", default="localhost")
-    
-    if print_args:
+    if vars(parser.parse_args())['print_args']:
         print '\n'
         for k,v in sorted(vars(parser.parse_args()).items()):
             print "{}: {}".format(k, v)
         print '\n'
+        import sys
+        sys.exit()
     return parser.parse_args()
 
